@@ -1,26 +1,70 @@
-from rich.console import Console
-from prompt_toolkit import prompt
+from textual.app import App, ComposeResult
+from textual.containers import Container
+from textual.widgets import Header, Footer, Input, Static
 from prompt_toolkit.history import InMemoryHistory
-from time import sleep
 from files.commands import *
 
+class CommandOutput(Static):
+    """Widget to display command output."""
+    pass
 
-def main():
-    console = Console()
-    history = InMemoryHistory()
-
-    while True:
-        try:
-            user_input = prompt("> ", history=history) # string
-            if not handle_command(user_input):
-                console.print("[bold red]See you next time![/bold red]")
-                sleep(0.5)
-                break
-        except (KeyboardInterrupt, EOFError):
-            console.print("[bold red]See you next time![/bold red]")
-            sleep(0.5)
-            break
+class CommandApp(App):
+    """Terminal application with a border."""
+    
+    CSS = """
+    Screen {
+        layout: grid;
+        grid-size: 1;
+        grid-gutter: 0;
+        padding: 1;
+    }
+    
+    #command-container {
+        width: 100%;
+        height: 100%;
+        border: solid $accent;
+        padding: 1;
+    }
+    
+    #output {
+        height: 1fr;
+        overflow-y: auto;
+    }
+    
+    #command-input {
+        margin-top: 1;
+    }
+    """
+    
+    def compose(self) -> ComposeResult:
+        yield Header(show_clock=True)
+        
+        with Container(id="command-container"):
+            yield CommandOutput("Welcome to the Command Application\n", id="output")
+            yield Input(placeholder="Enter command...", id="command-input")
+        
+        yield Footer()
+    
+    def on_input_submitted(self, event: Input.Submitted) -> None:
+        """Process commands when Enter is pressed."""
+        command = event.value
+        
+        # Add command to output
+        output = self.query_one("#output")
+        output.update(output.render().plain + f"> {command}\n")
+        
+        # Process command
+        if command.lower() in ("exit", "quit"):
+            output.update(output.render().plain + "See you next time!\n")
+            self.exit()
+        else:
+            # Here you'd integrate with handle_command
+            output.update(output.render().plain + f"Processing: {command}\n")
+        
+        # Clear input
+        event.input.value = ""
 
 
 if __name__ == "__main__":
-    main()
+    app = CommandApp()
+    app.run()
