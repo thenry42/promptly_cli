@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+requests
+rich
+prompt_toolkit
+colorama
+python-dotenv
