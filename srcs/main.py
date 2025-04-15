@@ -1,6 +1,6 @@
-from files.ShellApp import ShellApp
+from files.shell import Shell
 
 
 if __name__ == "__main__":
-    app = ShellApp()
-    app.run()
+    app = Shell()
+    app.main_loop()

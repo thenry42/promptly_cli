@@ -3,11 +3,12 @@ fastapi>=0.103.1
 prompt_toolkit>=3.0.39
 python-dotenv>=1.0.0
 requests>=2.31.0
-rich>=13.5.2
-textual>=0.35.1
-uvicorn>=0.23.2
+rich
+textual
+uvicorn
 ollama
 mistralai
+google-generativeai
 google-genai
 openai
 anthropic
