@@ -98,6 +98,10 @@ class ShellApp(App):
         
         output = self.query_one("#terminal-output")
         
+        # Display the command that was entered
+        command_text = f"{self.prompt}{command}"
+        output.mount(Static(command_text, classes="command-line"))
+        
         # Process the command
         if command == "hello":
             self.actions.action_say_hello()
@@ -117,6 +121,7 @@ class ShellApp(App):
         elif command == "clear":
             # Clear terminal output
             output.remove_children()
+            # After clearing, show a message
             output.mount(Static("Terminal cleared", classes="output-line"))
             self.create_new_prompt()
         else:
