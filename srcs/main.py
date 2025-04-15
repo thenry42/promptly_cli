@@ -1,4 +1,3 @@
-from files.style import CSS
 from files.ShellApp import ShellApp
 
 
