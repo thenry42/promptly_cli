@@ -19,7 +19,7 @@ class ShellApp(App):
         self.history_index = 0
         self.theme = "nord"
         self.actions = Actions(self)
-        self.prompt = "$> "
+        self.prompt = "> "
     
     def on_mount(self) -> None:
         """Initialize the UI when the app is mounted."""
