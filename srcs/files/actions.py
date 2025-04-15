@@ -1,4 +1,5 @@
 from textual.widgets import Static
+from .providers import get_providers
 
 
 BINDINGS = [
@@ -48,4 +49,14 @@ class Actions:
         output.mount(Static("  Ctrl+L - Clear terminal", classes="output-line"))
         output.mount(Static("  Ctrl+N - Create new", classes="output-line"))
         output.mount(Static("  Ctrl+Q - Exit", classes="output-line"))
+        output.mount(Static("", classes="output-line"))
+    
+    def action_providers(self) -> None:
+        """Show available providers."""
+        providers = get_providers()
+        output = self.app.query_one("#terminal-output")
+        output.mount(Static("", classes="output-line"))
+        output.mount(Static("Available providers:", classes="output-line"))
+        for provider in providers:
+            output.mount(Static(f"- {provider}", classes="output-line"))
         output.mount(Static("", classes="output-line"))

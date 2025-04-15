@@ -114,6 +114,9 @@ class ShellApp(App):
         elif command == "help":
             self.action_help()
             self.create_new_prompt()
+        elif command == "providers":
+            self.action_providers()
+            self.create_new_prompt()
         elif command == "exit":
             # Don't create a new prompt when exiting
             output.mount(Static("Exiting...", classes="output-line"))
@@ -206,4 +209,7 @@ class ShellApp(App):
     def action_help(self) -> None:
         """Show help information in the terminal."""
         self.actions.action_help()
-    
+
+    def action_providers(self) -> None:
+        """Show available providers."""
+        self.actions.action_providers()
