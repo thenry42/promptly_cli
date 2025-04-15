@@ -13,17 +13,28 @@ class OptionsList:
         option = event.option.prompt
         output = self.app.query_one("#terminal-output")
         
+        # First hide the option list
+        self.app.query_one("#option-list").display = False
+         
+        try:
+            for container in output.query(".prompt-container"):
+                container.remove()
+        except Exception:
+            pass
+        
+        # Then show the appropriate message
         if option == "Create a new chat":
             output.mount(Static("Creating a new file...", classes="output-line"))
         elif option == "New terminal session":
             output.mount(Static("Starting a new terminal session...", classes="output-line"))
         elif option == "Cancel":
             output.mount(Static("Cancelling...", classes="output-line"))
-            
-        self.app.query_one("#option-list").display = False
         
-        # Ensure a new prompt is created
+        # After showing the message, create a new prompt
         self.app.create_new_prompt()
+        
+        # Finally, focus the input field
+        self.app.set_timer(0.1, self.app.focus_input)
     
     def show_option_list(self) -> None:
         """Display the option list for creating new items."""

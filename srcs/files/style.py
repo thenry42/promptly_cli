@@ -14,7 +14,7 @@ Header {
 }
 
 .output-line {
-    margin-bottom: 0;
+    margin-bottom: 1;
     width: 100%;
 }
 

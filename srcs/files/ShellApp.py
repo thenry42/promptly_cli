@@ -35,6 +35,13 @@ class ShellApp(App):
         
         # Create the initial prompt with input field
         self.create_new_prompt()
+        
+        # Ensure input is focused
+        self.set_timer(0.1, self.focus_input)
+    
+    def on_screen_resume(self) -> None:
+        """Ensure input is focused when screen resumes."""
+        self.set_timer(0.1, self.focus_input)
     
     def create_new_prompt(self) -> None:
         """Creates a new prompt line with input field."""
@@ -56,6 +63,9 @@ class ShellApp(App):
         
         # Scroll to make the prompt visible
         terminal.scroll_end(animate=False)
+        
+        # Ensure focus with a slight delay
+        self.set_timer(0.1, self.focus_input)
     
     def compose(self) -> ComposeResult:
         """Compose the UI elements."""
@@ -86,6 +96,7 @@ class ShellApp(App):
             self.create_new_prompt()
             return
             
+        # Add command to history before processing
         self.command_history.append(command)
         self.history_index = len(self.command_history)
         
@@ -156,18 +167,48 @@ class ShellApp(App):
     def on_blur(self, event: events.Blur) -> None:
         """Redirect focus to input when other elements lose focus."""
         option_list = self.query_one("#option-list")
-        if (not self.is_closing and 
-            event.target.id != "command-input" and 
-            not (option_list.display and option_list.has_focus)):
-            self.set_timer(0.05, self.focus_input)
+        
+        # Don't redirect focus if we're closing the app
+        if self.is_closing:
+            return
+            
+        # Don't redirect if we just lost focus from the input itself
+        if event.target.id == "command-input":
+            return
+            
+        # Don't redirect if the option list is visible and has focus
+        if option_list.display and option_list.has_focus:
+            return
+            
+        # In all other cases, refocus the input field
+        self.set_timer(0.05, self.focus_input)
     
     def focus_input(self) -> None:
         """Focus the input field."""
         try:
-            self.query_one("#command-input").focus()
+            # Check if the option list is visible
+            option_list = self.query_one("#option-list")
+            if option_list.display:
+                # Don't focus input if option list is visible
+                return
+                
+            # Find and focus the input field
+            input_field = self.query_one("#command-input")
+            if not input_field.has_focus:
+                input_field.focus()
         except Exception:
             # Input might not exist yet
             pass
+            
+    def on_click(self, event: events.Click) -> None:
+        """Ensure input focus is maintained on click events."""
+        # Don't redirect if we're clicking on the option list
+        option_list = self.query_one("#option-list")
+        if option_list.display:
+            return
+            
+        # Focus the input on any click in the app (after a short delay)
+        self.set_timer(0.05, self.focus_input)
     
     def action_toggle_theme(self) -> None:
         """Toggle between themes."""
