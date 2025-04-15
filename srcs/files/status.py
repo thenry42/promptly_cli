@@ -100,9 +100,8 @@ def load_environment():
 # Call the environment loading function
 load_environment()
 
-def get_providers() -> list[str]:
+def get_status() -> list[str]:
     """Get a list of available AI providers based on valid API credentials."""
-    providers = []
 
     # Debug: Print environment variables to check if they're loaded correctly
     mistral_key = os.getenv("MISTRAL_API_KEY")
@@ -124,7 +123,6 @@ def get_providers() -> list[str]:
             client = ollama.Client()
             # Try to list models to verify connection
             models = client.list()
-            providers.append("ollama")
             console.print("ollama available", style="green")
         except Exception as e:
             console.print(f"ollama error: {str(e)}", style="red")
@@ -133,7 +131,6 @@ def get_providers() -> list[str]:
     if MISTRAL_AVAILABLE and mistral_key:
         try:
             client = mistralai.Mistral(api_key=mistral_key)
-            providers.append("mistral")
             console.print("mistral api key set", style="green")
         except Exception as e:
             console.print(f"mistral error: {str(e)}", style="red")
@@ -142,7 +139,6 @@ def get_providers() -> list[str]:
     if OPENAI_AVAILABLE and openai_key:
         try:
             client = openai.OpenAI(api_key=openai_key)
-            providers.append("openai")
             console.print("openai api key set", style="green")
         except Exception as e:
             console.print(f"openai error: {str(e)}", style="red")
@@ -151,7 +147,6 @@ def get_providers() -> list[str]:
     if ANTHROPIC_AVAILABLE and anthropic_key:
         try:
             client = anthropic.Anthropic(api_key=anthropic_key)
-            providers.append("anthropic")
             console.print("anthropic api key set", style="green")
         except Exception as e:
             console.print(f"anthropic error: {str(e)}", style="red")
@@ -160,7 +155,6 @@ def get_providers() -> list[str]:
     if GEMINI_AVAILABLE and gemini_key:
         try:
             client = genai.Client(api_key=gemini_key)
-            providers.append("gemini")
             console.print("gemini api key set", style="green")
         except Exception as e:
             console.print(f"gemini error: {str(e)}", style="red")
@@ -169,10 +163,7 @@ def get_providers() -> list[str]:
     if OPENAI_AVAILABLE and deepseek_key:
         try:
             client = openai.OpenAI(api_key=deepseek_key, base_url="https://api.deepseek.com/v1")
-            providers.append("deepseek")
             console.print("deepseek api key set", style="green")
         except Exception as e:
             console.print(f"deepseek error: {str(e)}", style="red")
             
-    # Return the list of available providers
-    return providers

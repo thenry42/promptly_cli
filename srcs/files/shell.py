@@ -4,7 +4,7 @@ from rich.theme import Theme
 import os
 import sys
 import readline  # For history navigation
-from .providers import get_providers
+from .status import get_status
 from .console_config import console
 
 
@@ -60,8 +60,8 @@ class Shell:
             console.print("Hello, world!", style="info")
         elif command == "help":
             self.show_help()
-        elif command == "ls":
-            self.show_providers()
+        elif command == "status":
+            self.show_status()
         elif command == "exit":
             console.print("Exiting...", style="info")
             self.running = False
@@ -79,7 +79,7 @@ class Shell:
         commands = [
             ("hello", "Display a greeting"),
             ("clear", "Clear the terminal"),
-            ("ls", "Show available AI providers"),
+            ("status", "Show the status of providers"),
             ("exit", "Exit the application")
         ]
         
@@ -93,9 +93,9 @@ class Shell:
         console.print("  Ctrl+C     - Interrupt current operation")
         console.print()
     
-    def show_providers(self):
+    def show_status(self):
         """Show available providers."""
-        get_providers()
+        get_status()
         console.print()
     
     def main_loop(self):
