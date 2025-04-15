@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
 Name=SheLLM
-Exec=/bin/bash -c "cd /home/tibzer/Portfolio/SheLLM && make run"
+Exec=/bin/zsh -c "cd /home/tibzer/Portfolio/SheLLM && make clean && make run"
 Icon=/home/tibzer/Portfolio/SheLLM/SheLLM.png
 Terminal=true

@@ -5,17 +5,8 @@ import os
 import sys
 import readline  # For history navigation
 from .providers import get_providers
+from .console_config import console
 
-# Custom theme
-custom_theme = Theme({
-    "prompt": "green bold",
-    "command": "green",
-    "error": "red",
-    "info": "cyan",
-    "header": "magenta bold"
-})
-
-console = Console(theme=custom_theme)
 
 class Shell:
     def __init__(self):
@@ -69,11 +60,12 @@ class Shell:
             console.print("Hello, world!", style="info")
         elif command == "help":
             self.show_help()
-        elif command == "providers":
+        elif command == "ls":
             self.show_providers()
         elif command == "exit":
             console.print("Exiting...", style="info")
             self.running = False
+            exit()
         elif command == "clear":
             self.clear_screen()
         else:
@@ -87,7 +79,7 @@ class Shell:
         commands = [
             ("hello", "Display a greeting"),
             ("clear", "Clear the terminal"),
-            ("providers", "Show available AI providers"),
+            ("ls", "Show available AI providers"),
             ("exit", "Exit the application")
         ]
         
@@ -103,11 +95,7 @@ class Shell:
     
     def show_providers(self):
         """Show available providers."""
-        providers = get_providers()
-        console.print()
-        console.print("Available providers:", style="info")
-        for provider in providers:
-            console.print(f"- {provider}")
+        get_providers()
         console.print()
     
     def main_loop(self):
@@ -122,6 +110,7 @@ class Shell:
                 self.execute_command(command)
             except KeyboardInterrupt:
                 console.print("\nUse 'exit' to quit", style="info")
+                continue
             except Exception as e:
                 console.print(f"Error: {e}", style="error")
         
