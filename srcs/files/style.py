@@ -14,7 +14,7 @@ Header {
 }
 
 .output-line {
-    margin-bottom: 1;
+    margin-bottom: 0;
     width: 100%;
 }
 
@@ -62,17 +62,28 @@ Header {
     color: $text;
 }
 
+/* Option list overlay container */
+.option-container {
+    align: center middle;
+    width: 100%;
+    height: 100%;
+}
+
 /* Option list */
 #option-list {
-    width: 60%;
+    width: 50%;
     height: auto;
-    margin: 1;
     border: heavy $accent;
-    background: $surface;
+    background: $surface-darken-1;
     display: none;
 }
 
 #option-list:focus {
     border: heavy $accent-lighten-2;
+}
+
+.hint {
+    color: $warning;
+    text-style: italic;
 }
 """

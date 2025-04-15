@@ -1,6 +1,16 @@
 from textual.widgets import Static
 
 
+BINDINGS = [
+    # Application control
+    ("ctrl+q", "exit", "Exit"),
+    
+    # UI controls
+    ("ctrl+t", "toggle_theme", "Toggle theme"),
+    ("ctrl+h", "help", "Help"),
+]
+
+
 class Actions:
     """Handles application actions and commands."""
     
@@ -35,9 +45,5 @@ class Actions:
         output.mount(Static("  Ctrl+H - Show help", classes="output-line"))
         output.mount(Static("  Ctrl+L - Clear terminal", classes="output-line"))
         output.mount(Static("  Ctrl+N - Create new", classes="output-line"))
-        output.mount(Static("  Ctrl+Q/Ctrl+D - Exit", classes="output-line"))
-    
-    def action_new(self) -> None:
-        """Show options for creating new items."""
-        self.app.options.show_option_list()
+        output.mount(Static("  Ctrl+Q - Exit", classes="output-line"))
         

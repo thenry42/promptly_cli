@@ -2,10 +2,8 @@ from files.style import CSS
 from textual.app import App, ComposeResult
 from textual.widgets import Header, Input, Static, OptionList
 from textual.containers import VerticalScroll, Horizontal
-from files.bindings import BINDINGS
 from textual import events
-from files.actions import Actions
-from files.options_list import OptionsList
+from files.actions import Actions, BINDINGS
 
 
 class ShellApp(App):
@@ -21,17 +19,11 @@ class ShellApp(App):
         self.history_index = 0
         self.theme = "nord"
         self.actions = Actions(self)
-        self.options = OptionsList(self)
         self.prompt = "$> "
     
     def on_mount(self) -> None:
         """Initialize the UI when the app is mounted."""
-        self.query_one("#option-list").display = False
-        
         output = self.query_one("#terminal-output", VerticalScroll)
-        output.mount(Static("Welcome to SheLLM!", classes="output-line"))
-        output.mount(Static("Type commands below:", classes="output-line"))
-        output.mount(Static("Try typing 'new' to see available options", classes="output-line"))
         
         # Create the initial prompt with input field
         self.create_new_prompt()
@@ -45,27 +37,35 @@ class ShellApp(App):
     
     def create_new_prompt(self) -> None:
         """Creates a new prompt line with input field."""
-        terminal = self.query_one("#terminal-output")
-        
-        # First, create a container for the prompt and input
-        prompt_container = Horizontal(classes="prompt-container")
-        terminal.mount(prompt_container)
-        
-        # Now that the container is mounted, add the prompt text
-        prompt_container.mount(Static(self.prompt, classes="prompt"))
-        
-        # Create and add the input field
-        input_field = Input(id="command-input")
-        prompt_container.mount(input_field)
-        
-        # Focus the input
-        input_field.focus()
-        
-        # Scroll to make the prompt visible
-        terminal.scroll_end(animate=False)
-        
-        # Ensure focus with a slight delay
-        self.set_timer(0.1, self.focus_input)
+        # Don't create a prompt if the app is closing
+        if not self:
+            return
+            
+        try:
+            terminal = self.query_one("#terminal-output")
+            
+            # First, create a container for the prompt and input
+            prompt_container = Horizontal(classes="prompt-container")
+            terminal.mount(prompt_container)
+            
+            # Now that the container is mounted, add the prompt text
+            prompt_container.mount(Static(self.prompt, classes="prompt"))
+            
+            # Create and add the input field
+            input_field = Input(id="command-input")
+            prompt_container.mount(input_field)
+            
+            # Focus the input
+            input_field.focus()
+            
+            # Scroll to make the prompt visible
+            terminal.scroll_end(animate=False)
+            
+            # Ensure focus with a slight delay
+            self.set_timer(0.1, self.focus_input)
+        except Exception:
+            # Handle any errors that might occur during shutdown
+            pass
     
     def compose(self) -> ComposeResult:
         """Compose the UI elements."""
@@ -73,13 +73,9 @@ class ShellApp(App):
         
         with VerticalScroll(id="terminal-output"):
             pass
-        
-        yield OptionList(
-            "Create a new chat",
-            "New terminal session",
-            "Cancel",
-            id="option-list"
-        )
+            
+        # Option list is now created dynamically when needed
+        # It will be positioned inside the terminal output area
     
     def on_input_submitted(self, event) -> None:
         """Process command input when submitted."""
@@ -106,29 +102,26 @@ class ShellApp(App):
         if command == "hello":
             self.actions.action_say_hello()
             output.mount(Static("Hello, world!", classes="output-line"))
+            self.create_new_prompt()
         elif command == "theme":
             self.actions.action_toggle_theme()
             output.mount(Static(f"Theme switched to {self.theme}", classes="output-line"))
+            self.create_new_prompt()
         elif command == "help":
             self.action_help()
+            self.create_new_prompt()
         elif command == "exit":
-            self.exit()
+            # Don't create a new prompt when exiting
+            output.mount(Static("Exiting...", classes="output-line"))
+            self.set_timer(0.5, self.exit)
         elif command == "clear":
-            # Clear terminal output but keep a clean state
+            # Clear terminal output
             output.remove_children()
             output.mount(Static("Terminal cleared", classes="output-line"))
-        elif command == "new":
-            self.options.show_option_list()
-            output.mount(Static("Select an option to create:", classes="output-line"))
+            self.create_new_prompt()
         else:
-            output.mount(Static(f"Unknown command: {command}", classes="output-line error"))
-        
-        # Create a new prompt immediately after the response
-        self.create_new_prompt()
-    
-    def on_option_list_option_selected(self, event: OptionList.OptionSelected) -> None:
-        """Handle option list selection."""
-        self.options.on_option_list_option_selected(event)
+            output.mount(Static(f"Unknown command: {command}. Type 'help' to see available commands.", classes="output-line error"))
+            self.create_new_prompt()
     
     def on_key(self, event) -> None:
         """Handle key events for command history navigation."""
@@ -166,8 +159,6 @@ class ShellApp(App):
     
     def on_blur(self, event: events.Blur) -> None:
         """Redirect focus to input when other elements lose focus."""
-        option_list = self.query_one("#option-list")
-        
         # Don't redirect focus if we're closing the app
         if self.is_closing:
             return
@@ -176,22 +167,12 @@ class ShellApp(App):
         if event.target.id == "command-input":
             return
             
-        # Don't redirect if the option list is visible and has focus
-        if option_list.display and option_list.has_focus:
-            return
-            
         # In all other cases, refocus the input field
         self.set_timer(0.05, self.focus_input)
     
     def focus_input(self) -> None:
         """Focus the input field."""
         try:
-            # Check if the option list is visible
-            option_list = self.query_one("#option-list")
-            if option_list.display:
-                # Don't focus input if option list is visible
-                return
-                
             # Find and focus the input field
             input_field = self.query_one("#command-input")
             if not input_field.has_focus:
@@ -202,11 +183,6 @@ class ShellApp(App):
             
     def on_click(self, event: events.Click) -> None:
         """Ensure input focus is maintained on click events."""
-        # Don't redirect if we're clicking on the option list
-        option_list = self.query_one("#option-list")
-        if option_list.display:
-            return
-            
         # Focus the input on any click in the app (after a short delay)
         self.set_timer(0.05, self.focus_input)
     
