@@ -2,7 +2,6 @@ import ollama
 import mistralai
 from google import genai
 import os
-import logging
 from dotenv import load_dotenv
 
 load_dotenv("../../.env")

@@ -1,10 +1,9 @@
 from rich.console import Console
-from rich.prompt import Prompt
 from rich.panel import Panel
-from rich.text import Text
 from rich.theme import Theme
 import os
 import sys
+import readline  # For history navigation
 from .providers import get_providers
 
 # Custom theme
@@ -25,6 +24,26 @@ class Shell:
         self.running = True
         self.prompt = "> "
         self.theme = "default"
+        
+        # Configure readline
+        try:
+            # Set up history file
+            histfile = os.path.join(os.path.expanduser("~"), ".shellm_history")
+            try:
+                readline.read_history_file(histfile)
+                readline.set_history_length(1000)
+            except FileNotFoundError:
+                pass
+                
+            # Set the readline prompt directly
+            # This is the key fix - readline will now handle the prompt properly
+            readline.set_pre_input_hook(lambda: readline.insert_text(''))
+            
+            # Save history on exit
+            import atexit
+            atexit.register(readline.write_history_file, histfile)
+        except (ImportError, AttributeError):
+            pass
     
     def clear_screen(self):
         """Clear the terminal screen."""
@@ -41,16 +60,13 @@ class Shell:
         if command.strip() == "":
             return
         
-        # Add to history
-        self.command_history.append(command)
-        self.history_index = len(self.command_history)
+        # Save command to our history list
+        if command not in self.command_history:
+            self.command_history.append(command)
         
         # Process commands
         if command == "hello":
             console.print("Hello, world!", style="info")
-        elif command == "theme":
-            self.theme = "dark" if self.theme == "default" else "default"
-            console.print(f"Theme switched to {self.theme}", style="info")
         elif command == "help":
             self.show_help()
         elif command == "providers":
@@ -70,7 +86,6 @@ class Shell:
         console.print("Available commands:", style="info")
         commands = [
             ("hello", "Display a greeting"),
-            ("theme", "Toggle between themes"),
             ("clear", "Clear the terminal"),
             ("providers", "Show available AI providers"),
             ("exit", "Exit the application")
@@ -79,6 +94,11 @@ class Shell:
         for cmd, desc in commands:
             console.print(f"  {cmd} - {desc}")
         
+        console.print()
+        console.print("Keyboard shortcuts:", style="info")
+        console.print("  Up Arrow   - Previous command in history")
+        console.print("  Down Arrow - Next command in history")
+        console.print("  Ctrl+C     - Interrupt current operation")
         console.print()
     
     def show_providers(self):
@@ -96,10 +116,9 @@ class Shell:
         
         while self.running:
             try:
-                # Display the styled prompt
-                console.print(self.prompt, end="", style="prompt")
-                # Get user input without styling
-                command = input()
+                # Use readline's prompt functionality directly
+                # This keeps the prompt visible during history navigation
+                command = input(console.render_str(f"[prompt]{self.prompt}[/prompt]"))
                 self.execute_command(command)
             except KeyboardInterrupt:
                 console.print("\nUse 'exit' to quit", style="info")
