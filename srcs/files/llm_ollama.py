@@ -9,4 +9,4 @@ def get_ollama_models(addr):
         res = [model["model"] for model in models["models"]]
         return res
     except Exception as e:
-        return e
+        return []
