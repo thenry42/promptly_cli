@@ -1,8 +1,12 @@
 # Promptly CLI
 
-A unified command-line interface for interacting with various AI language models, including Ollama, OpenAI, Anthropic, Google Gemini, and DeepSeek.
+A command-line interface for interacting with various AI language models.
 
-## Features
+## Current Status
+
+This project is in early development. Currently, it provides a basic framework for a command-line tool that will eventually support multiple AI providers.
+
+## Features (Planned)
 
 - Single command interface for all AI providers
 - Compatible with the Ollama CLI syntax
@@ -16,9 +20,9 @@ A unified command-line interface for interacting with various AI language models
 ### Prerequisites
 
 - Python 3.8 or higher
-- pip (Python package manager)
+- make (for using the Makefile)
 
-### Install from source
+### Setup Development Environment
 
 1. Clone the repository:
 ```bash
@@ -26,118 +30,58 @@ git clone https://github.com/yourusername/promptly_cli.git
 cd promptly_cli
 ```
 
-2. Install the package:
+2. Set up the environment:
 ```bash
-pip install -e .
+make setup
 ```
 
-This will install the `llm` command globally on your system.
-
-## Configuration
-
-Create a `.env` file in the project root with your API keys:
-
-```
-OPENAI_API_KEY=sk-...
-ANTHROPIC_API_KEY=sk-...
-GEMINI_API_KEY=...
-DEEPSEEK_API_KEY=...
-```
+This will create a virtual environment and install the required dependencies.
 
 ## Usage
 
-### One-off queries
+Currently, the tool provides a simple command-line interface:
 
 ```bash
-# Get a single response from a specific model
-llm run openai/gpt-4 "What is the capital of France?"
-llm run anthropic/claude-3-opus-20240229 "Explain quantum computing"
-llm run ollama/llama2 "Write a short poem about coding"
+# Run without arguments (displays "Hello, world!")
+make run
+
+# Run with arguments
+make runwith ARGS="arg1 arg2 arg3"
 ```
 
-### Interactive chat mode
+### Creating an Executable
+
+You can create a standalone executable with:
 
 ```bash
-# Start an interactive chat with a specific model
-llm run openai/gpt-4
-llm run anthropic/claude-3-sonnet-20240229
-llm run ollama/mistral
+make exe
 ```
 
-### General shell
+This will create an executable file in the `dist/` directory that you can run directly without Python installed.
 
-```bash
-# Start the general shell
-llm
-```
+## Development
 
-### List available models
+### Available Make Commands
 
-```bash
-llm list
-```
-
-## Shell Commands
-
-When in the general shell, you can use these commands:
-
-- `help` - Display help message
-- `use <provider/model>` - Switch to a specific provider and model
-- `list` - List available models from all providers
-- `status` - Show the status of all providers
-- `clear` - Clear the terminal
-- `exit` - Exit the application
-
-When in chat mode with a specific model, you can use:
-
-- Type your message directly to chat with the model
-- `:help` - Display help message
-- `:exit` - Exit chat mode
-- `:clear` - Clear the terminal
-- `:use <provider/model>` - Switch to a different provider/model
-- `:list` - List available models
-- `:reset` - Reset the chat history
-- `:status` - Show the status of providers
-
-## Examples
-
-```bash
-# Start a chat with GPT-4
-llm run openai/gpt-4
-
-# Ask a one-off question to Claude
-llm run anthropic/claude-3-haiku-20240307 "What's the weather like today in Paris?"
-
-# List all available models
-llm list
-```
+- `make setup` - Create virtual environment and install dependencies
+- `make run` - Run the application with no arguments
+- `make runwith ARGS="arg1 arg2"` - Run with specific arguments
+- `make test` - Run the test suite (when tests are added)
+- `make exe` - Create standalone executable
+- `make clean` - Remove temporary files and build artifacts
+- `make help` - Display help information
 
 ## Project Structure
 
 - `srcs/` - Source code
   - `main.py` - Entry point
-  - `files/` - Module files
-    - `providers.py` - Provider implementations
-    - `shell.py` - Interactive shell
-    - `status.py` - Status reporting
-    - `console_config.py` - Console configuration
+  - `requirements.txt` - Project dependencies
 
-## Development
+## Roadmap
 
-### Setup development environment
-
-```bash
-# Create and activate a virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install development dependencies
-make install
-```
-
-### Run the application in development mode
-
-```bash
-make run
-```
+- Add support for multiple AI providers
+- Implement interactive chat mode
+- Create provider-specific adapters
+- Add configuration management
+- Publish to PyPI for easier installation
 
