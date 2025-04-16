@@ -1,26 +1,17 @@
-from rich.console import Console
-from prompt_toolkit import prompt
-from prompt_toolkit.history import InMemoryHistory
-from time import sleep
-from files.commands import *
-
+import sys
 
 def main():
-    console = Console()
-    history = InMemoryHistory()
-
-    while True:
-        try:
-            user_input = prompt("> ", history=history) # string
-            if not handle_command(user_input):
-                console.print("[bold red]See you next time![/bold red]")
-                sleep(0.5)
-                break
-        except (KeyboardInterrupt, EOFError):
-            console.print("[bold red]See you next time![/bold red]")
-            sleep(0.5)
-            break
-
+    args = sys.argv[1:]  # Get all command line arguments except the script name
+    
+    if not args:
+        # No arguments were provided
+        print("Hello, world!")
+    else:
+        # Print each argument on a new line
+        for i, arg in enumerate(args, 1):
+            print(f"Argument {i}: {arg}")
+    
+    sys.exit(0)
 
 if __name__ == "__main__":
     main()

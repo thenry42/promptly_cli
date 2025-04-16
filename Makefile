@@ -1,56 +1,52 @@
-# Makefile for Python application with virtual environment
+# Simple Makefile for Python project
 
-.PHONY: setup install run clean test help
+.PHONY: setup test clean run exe
 
-# Variables
+# Configuration
 VENV = venv
 PYTHON = $(VENV)/bin/python
 PIP = $(VENV)/bin/pip
-PROJECT_DIR = srcs
-REQUIREMENTS = $(PROJECT_DIR)/requirements.txt
+SRCS = srcs
 
-help:
-	@echo "Available commands:"
-	@echo "  make setup    - Create virtual environment"
-	@echo "  make install  - Install dependencies"
-	@echo "  make run      - Run the application"
-	@echo "  make clean    - Remove virtual environment and cache files"
-	@echo "  make help     - Show this help message"
-
-$(VENV):
+# Create and set up virtual environment
+setup:
 	python -m venv $(VENV)
-
-setup: $(VENV)
-	@echo "Virtual environment created at $(VENV)"
-
-install: setup
 	$(PIP) install --upgrade pip
-	$(PIP) install -r $(REQUIREMENTS)
-	@echo "Dependencies installed successfully"
+	$(PIP) install -r $(SRCS)/requirements.txt
+	@echo "Development environment set up successfully"
 
-run: install
-	@clear
-	@echo "┌───────────────────────────────────────────┐"
-	@echo "│             Running SheLLM                │"
-	@echo "└───────────────────────────────────────────┘"
-	@echo ""
-	@cd $(PROJECT_DIR) && ../$(PYTHON) main.py
-	@echo ""
-	@echo "┌───────────────────────────────────────────┐"
-	@echo "│        Program execution complete         │"
-	@echo "└───────────────────────────────────────────┘"
+# Run the application
+run:
+	@$(PYTHON) $(SRCS)/main.py
 
+# Run with arguments
+runwith:
+	@$(PYTHON) $(SRCS)/main.py $(ARGS)
+
+# Run tests (when you add them)
+test:
+	$(VENV)/bin/pytest $(SRCS)
+
+# Create standalone executable
+exe: setup
+	$(PIP) install pyinstaller
+	$(VENV)/bin/pyinstaller --onefile --name promptly $(SRCS)/main.py
+	@echo "Executable created at dist/promptly"
+
+# Clean project files
 clean:
-	rm -rf $(VENV)
+	rm -rf build/ dist/ *.egg-info/ $(VENV) *.spec
 	find . -type d -name __pycache__ -exec rm -rf {} +
 	find . -type f -name "*.pyc" -delete
-	find . -type f -name "*.pyo" -delete
-	find . -type f -name "*.pyd" -delete
-	find . -type f -name ".DS_Store" -delete
-	find . -type d -name "*.egg-info" -exec rm -rf {} +
-	find . -type d -name "*.egg" -exec rm -rf {} +
-	find . -type d -name ".pytest_cache" -exec rm -rf {} +
-	find . -type d -name ".coverage" -exec rm -rf {} +
-	find . -type d -name "htmlcov" -exec rm -rf {} +
-	find . -type d -name ".tox" -exec rm -rf {} +
-	@echo "Cleaned up project files"
+
+# Display help information
+help:
+	@echo "Usage: make [target]"
+	@echo ""
+	@echo "Targets:"
+	@echo "  setup      Create virtual environment and install dependencies"
+	@echo "  run        Run the application"
+	@echo "  runwith    Run with arguments (make runwith ARGS=\"arg1 arg2\")"
+	@echo "  test       Run the test suite"
+	@echo "  exe        Create standalone executable"
+	@echo "  clean      Remove temporary files and build artifacts"
