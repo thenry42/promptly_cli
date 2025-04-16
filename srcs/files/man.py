@@ -3,7 +3,8 @@ from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
 from rich.markdown import Markdown
-from .list import list_models
+from .list import list_models, list_models_with_provider
+
 
 def Usage():
     console = Console()
@@ -45,7 +46,7 @@ def list(args):
     if len(args) == 1: # llm list = 1 arg
         list_models()
     elif len(args) == 2: # llm list [provider] = 2 args
-        console.print("Listing models for provider...")
+        list_models_with_provider(args[1])
     else:
         console.print("Error: Invalid number of arguments. Expected 1 or 2 arguments, got", len(args))
 
