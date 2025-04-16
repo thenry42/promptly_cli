@@ -75,8 +75,8 @@ def help():
     table.add_row("llm list", "Show available models")
     table.add_row("llm list \\[provider]", "Show available models for a specific provider")
     table.add_row("llm run", "Launch a chat with a model in interactive mode.")
-    table.add_row("llm run \\[provider]:\\[model]", "Run a specific model in interactive mode")
-    table.add_row("llm run \\[provider]:\\[model] \\[prompt]", "Run a specific model with a single request")
+    table.add_row("llm run \\[provider]/\\[model]", "Run a specific model in interactive mode")
+    table.add_row("llm run \\[provider]/\\[model] \\[prompt]", "Run a specific model with a single request")
     table.add_row("llm help", "Help about any command")
     
     console.print()
