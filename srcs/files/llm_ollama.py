@@ -120,24 +120,21 @@ def ollama_chat_completion(model, prompt, messages):
             console.print("[bold yellow]Warning: No messages to send to the model[/bold yellow]")
             return ""
         
+        response = client.chat(
+            model=model,
+            messages=chat_messages,
+            stream=True
+        )
+        
         # Use StringIO objects to collect the response text
         full_response = StringIO()
         
         # Track if we've printed anything
         output_produced = False
         
-        # Initialize content output status
-        started_output = False
-        
-        # Use a progress spinner instead of the panel
-        with console.status(f"[bold blue]Generating response from {model}...", spinner="dots") as status:
-            response = client.chat(
-                model=model,
-                messages=chat_messages,
-                stream=True
-            )
-            
-            # For streaming display - but don't print anything yet, just collect it
+        # Display a fancy animated loading indicator
+        with console.status(f"[bold blue]{model}[/bold blue] is thinking...", spinner="dots12") as status:
+            # For streaming display, we'll accumulate the response first
             for chunk in response:
                 content = ""
                 if "message" in chunk and "content" in chunk["message"]:
@@ -146,30 +143,19 @@ def ollama_chat_completion(model, prompt, messages):
                     content = chunk["response"]
                     
                 if content:
-                    # Only print a newline and start streaming once we have content
-                    if not started_output:
-                        # Stop the spinner before starting to print content
-                        status.stop()
-                        console.print("\n")  # Start on a new line after spinner stops
-                        started_output = True
-                    
-                    # Now print the content
-                    console.print(content, end="")
+                    # Just accumulate the response without printing incrementally
                     full_response.write(content)
                     output_produced = True
         
-        # Print a newline for proper spacing, only if we haven't already
-        if not started_output:
-            console.print("\n")
-        else:
-            console.print("")  # Extra newline for spacing if we did output content
-        
-        # If we got a response, render it only as markdown inside a panel
+        # If we got a response, render it as markdown inside a panel
         if output_produced:
             # Get the complete text
             text_response = full_response.getvalue()
             
-            # Skip the plaintext panel and only display rendered markdown
+            # Add a newline before displaying the response
+            console.print("")
+            
+            # Display only the markdown response in a panel (no plaintext panel)
             md = Markdown(text_response)
             markdown_panel = Panel(
                 md,

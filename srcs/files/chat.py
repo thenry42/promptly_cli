@@ -53,6 +53,7 @@ def chat(provider, model):
     
     console.print("[bold green]Welcome to the AI Chat![/bold green] Type your message and press Enter. Press Ctrl+D to exit.")
     console.print("[bold yellow]Tip: Use arrow keys to navigate history, Tab for suggestions, Ctrl+C for a new prompt.[/bold yellow]")
+    console.print()
 
     # Keep track of words to add to the completer
     all_words = history_words.copy()
