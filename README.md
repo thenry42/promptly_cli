@@ -73,8 +73,9 @@ OLLAMA_ADDR=http://localhost:11434
 You can obtain API keys from:
 - OpenAI (GPT models): https://platform.openai.com/api-keys
 - Mistral: https://console.mistral.ai/api-keys/
-- Anthropic (Claude): https://console.anthropic.com/keys
+- Anthropic (Claude): https://console.anthropic.com/
 - Google (Gemini): https://ai.google.dev/tutorials/setup
+- DeepSeek: https://www.deepseek.com/en/
 - Ollama (local models): Install from https://ollama.com
 
 ## Usage
