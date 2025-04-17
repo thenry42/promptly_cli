@@ -92,6 +92,7 @@ def ollama_single_completion(model, prompt):
                 expand=False
             )
             console.print(markdown_panel)
+            console.print()
             
             return "Output displayed in both formats"
         else:
