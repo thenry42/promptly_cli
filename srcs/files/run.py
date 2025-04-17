@@ -272,11 +272,56 @@ def run_with_model(arg):
     console = Console()
 
     # 1. parse the argument to get the provider and model
-
+    # Parse the provider and model from arg (format: provider/modelname)
+    parts = arg.split('/', 1)
+    if len(parts) != 2:
+        console.print(Panel(
+            f"[bold red]Invalid format: {arg}[/bold red]\nExpected format: provider/modelname",
+            title="Error",
+            border_style="red",
+            expand=False
+        ))
+        return 1
+    
+    provider, model = parts
+    
     # 2. check if the provider and model are available
-
+    with Status(f"[bold green]Checking if provider [cyan]{provider}[/cyan] is available...", spinner="dots") as status:
+        available_providers = get_available_providers()
+        
+        if provider not in available_providers:
+            console.print(Panel(
+                f"[bold red]Provider '{provider}' not found![/bold red]\nAvailable providers: {', '.join(available_providers)}",
+                title="Error",
+                border_style="red",
+                expand=False
+            ))
+            return 1
+        
+        # Check if the model is available for this provider
+        models = retrieve_models(provider)
+        if model not in models:
+            # Stop the status spinner before showing the error message
+            status.stop()
+            console.print(Panel(
+                f"[bold red]Model '{model}' not found for provider '{provider}'![/bold red]\nAvailable models: {', '.join(models[:10])}{'...' if len(models) > 10 else ''}",
+                title="Error",
+                border_style="red",
+                expand=False
+            ))
+            return 1
+    
+    # Show startup message
+    console.print("")
+    console.print(Panel(
+        f"[bold]Starting chat with [green]{provider}[/green]/[cyan]{model}[/cyan][/bold]",
+        border_style="green",
+        expand=False
+    ))
+    
     # 3. launch the chat in a loop (handle signals EOF, SIGINT, SIGTERM)
-
+    chat(provider, model)
+    return 0
 
 def run_with_model_and_prompt(arg1, arg2):
     console = Console()
