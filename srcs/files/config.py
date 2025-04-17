@@ -7,7 +7,33 @@ console = Console()
 
 # Get the project root directory (where .env should be located)
 PROJECT_ROOT = Path(__file__).parent.parent.parent.absolute()
-ENV_FILE_PATH = os.path.join(PROJECT_ROOT, '.env')
+
+# Define locations to look for .env files in order of preference
+def get_env_file_paths():
+    """Get potential .env file paths in order of preference"""
+    paths = [
+        # 1. Check in the installation directory
+        os.path.join(PROJECT_ROOT, '.env'),
+        
+        # 2. Check in config directory
+        os.path.join(os.path.expanduser('~'), '.config', 'promptly_cli', '.env'),
+        
+        # 3. Check in the home directory
+        os.path.join(os.path.expanduser('~'), '.promptly_cli', '.env')
+    ]
+    return paths
+
+def get_env_file_path():
+    """Get the path to the .env file that exists, or return the default path"""
+    for path in get_env_file_paths():
+        if os.path.exists(path):
+            return path
+    
+    # Default to the config directory
+    return os.path.join(os.path.expanduser('~'), '.config', 'promptly_cli', '.env')
+
+# Get the active .env file path
+ENV_FILE_PATH = get_env_file_path()
 
 def load_environment(force_reload=True):
     """
@@ -54,7 +80,7 @@ def get_api_key(provider):
     
     if not api_key:
         console.print(f"[red]Error: {env_var_name} not found in environment variables[/red]")
-        console.print("[red]Please set it in your .env file or as an environment variable[/red]")
+        console.print(f"[red]Please set it in your config file: {ENV_FILE_PATH}[/red]")
         return None
     
     return api_key
