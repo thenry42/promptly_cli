@@ -87,3 +87,10 @@ def openai_single_completion(model, prompt, api_key):
     except Exception as e:
         console.print(f"\n[bold red]Error: {str(e)}[/bold red]")
         return str(e)
+    
+
+def openai_chat_completion(model, prompt, messages, api_key):
+    """Send a chat request to the model"""
+    console = Console()
+    console.print(f"[bold blue]{model}[/bold blue] response")
+    return ""

@@ -7,6 +7,7 @@ from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.completion import WordCompleter
 from prompt_toolkit.styles import Style
 import re
+from files.llm_global import chat_completion
 
 def chat(provider, model):
     console = Console()
@@ -55,6 +56,9 @@ def chat(provider, model):
 
     # Keep track of words to add to the completer
     all_words = history_words.copy()
+    
+    # Initialize conversation history for the LLM
+    messages = []
 
     while True:
         try:
@@ -78,18 +82,24 @@ def chat(provider, model):
             # Update the completer with new words
             session.completer = WordCompleter(list(all_words), ignore_case=True)
 
-            # Simulate AI response (for now, echoing user input)
-            ai_response = user_input  # Replace with actual AI model call
-            console.print(f"[bold magenta]AI:[/bold magenta] {ai_response}")
+            # Add user message to history
+            messages.append({"role": "user", "content": user_input})
             
-            # Extract words from AI response to add to the completer as well
-            ai_words = re.findall(r'\b\w+\b', ai_response)
-            for word in ai_words:
-                if len(word) > 3 and word not in all_words:  # Only add substantial words
-                    all_words.add(word)
+            # Get AI response using chat_completion
+            ai_response = chat_completion(provider, model, user_input, messages)
             
-            # Update the completer again with AI response words
-            session.completer = WordCompleter(list(all_words), ignore_case=True)
+            # Add AI response to conversation history if we got a valid response
+            if ai_response:
+                messages.append({"role": "assistant", "content": ai_response})
+                
+                # Extract words from AI response to add to the completer as well
+                ai_words = re.findall(r'\b\w+\b', ai_response)
+                for word in ai_words:
+                    if len(word) > 3 and word not in all_words:  # Only add substantial words
+                        all_words.add(word)
+                
+                # Update the completer again with AI response words
+                session.completer = WordCompleter(list(all_words), ignore_case=True)
 
         except EOFError:
             # Handle Ctrl+D
