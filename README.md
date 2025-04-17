@@ -2,11 +2,7 @@
 
 A command-line interface for interacting with various AI language models.
 
-## Current Status
-
-This project is in early development. Currently, it provides a basic framework for a command-line tool that will eventually support multiple AI providers.
-
-## Features (Planned)
+## Features
 
 - Single command interface for all AI providers
 - Compatible with the Ollama CLI syntax
@@ -20,9 +16,8 @@ This project is in early development. Currently, it provides a basic framework f
 ### Prerequisites
 
 - Python 3.8 or higher
-- make (for using the Makefile)
 
-### Setup Development Environment
+### Installation Steps
 
 1. Clone the repository:
 ```bash
@@ -30,12 +25,16 @@ git clone https://github.com/thenry42/promptly_cli.git
 cd promptly_cli
 ```
 
-2. Set up the environment:
+2. Run the installation script:
 ```bash
-make setup
+./install.sh
 ```
 
-This will create a virtual environment and install the required dependencies.
+This will:
+- Install the necessary dependencies
+- Create a configuration file for your API keys
+- Build an executable
+- Add it to your PATH
 
 ### Setting Up API Keys
 
@@ -76,11 +75,11 @@ You can obtain API keys from:
 - Mistral: https://console.mistral.ai/api-keys/
 - Anthropic (Claude): https://console.anthropic.com/keys
 - Google (Gemini): https://ai.google.dev/tutorials/setup
-- Ollama (local models): Install from https://ollama.ai
+- Ollama (local models): Install from https://ollama.com
 
 ## Usage
 
-Currently, the tool provides a simple command-line interface:
+The tool provides a simple command-line interface:
 
 ```bash
 # Run without arguments (displays help)
@@ -90,45 +89,22 @@ llm
 llm list
 
 # Start a chat with a specific model
-llm run MODEL_NAME
+llm run [provider]/[model]
 
 # Get help
 llm help
 ```
 
-### Creating an Executable
+## Uninstallation
 
-You can create a standalone executable with:
+To uninstall the application:
 
 ```bash
-make exe
+./uninstall.sh
 ```
 
-This will create an executable file in the `dist/` directory that you can run directly without Python installed.
-
-## Development
-
-### Available Make Commands
-
-- `make setup` - Create virtual environment and install dependencies
-- `make run` - Run the application with no arguments
-- `make runwith ARGS="arg1 arg2"` - Run with specific arguments
-- `make test` - Run the test suite (when tests are added)
-- `make exe` - Create standalone executable
-- `make clean` - Remove temporary files and build artifacts
-- `make help` - Display help information
-
-## Project Structure
-
-- `srcs/` - Source code
-  - `main.py` - Entry point
-  - `requirements.txt` - Project dependencies
-
-## Roadmap
-
-- Add support for multiple AI providers
-- Implement interactive chat mode
-- Create provider-specific adapters
-- Add configuration management
-- Publish to PyPI for easier installation
+This will:
+- Remove the executable
+- Remove the installation directory
+- Optionally preserve your API keys configuration
 
