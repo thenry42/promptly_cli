@@ -11,9 +11,9 @@ from prompt_toolkit.completion import WordCompleter
 from prompt_toolkit.styles import Style as PromptStyle
 import os
 from .config import get_available_providers
-from .llm_global import retrieve_models
+from .llm_global import retrieve_models, single_completion
 from .chat import chat
-from .completion import single_completion
+
 
 def run_no_args():
     console = Console()
@@ -282,9 +282,61 @@ def run_with_model_and_prompt(arg1, arg2):
     console = Console()
 
     # 1. parse the argument to get the provider and model
+    # Parse the provider and model from arg1 (format: provider/modelname)
+    parts = arg1.split('/', 1)
+    if len(parts) != 2:
+        console.print(Panel(
+            f"[bold red]Invalid format: {arg1}[/bold red]\nExpected format: provider/modelname",
+            title="Error",
+            border_style="red",
+            expand=False
+        ))
+        return 1
+    
+    provider, model = parts
+    
+    # Check if the provider is available
+    with Status(f"[bold green]Checking if provider [cyan]{provider}[/cyan] is available...", spinner="dots") as status:
+        available_providers = get_available_providers()
+        
+        if provider not in available_providers:
+            console.print(Panel(
+                f"[bold red]Provider '{provider}' not found![/bold red]\nAvailable providers: {', '.join(available_providers)}",
+                title="Error",
+                border_style="red",
+                expand=False
+            ))
+            return 1
+        
+        # Check if the model is available for this provider
+        models = retrieve_models(provider)
+        if model not in models:
+            # Stop the status spinner before showing the error message
+            status.stop()
+            console.print(Panel(
+                f"[bold red]Model '{model}' not found for provider '{provider}'![/bold red]\nAvailable models: {', '.join(models[:10])}{'...' if len(models) > 10 else ''}",
+                title="Error",
+                border_style="red",
+                expand=False
+            ))
+            return 1
 
-    # 2. check if the provider and model are available
+
+    # Get the prompt from arg2
+    prompt = arg2
+    
+    console.print(Panel(
+        f"[bold]Using [green]{provider}[/green]/[cyan]{model}[/cyan] to answer:[/bold]\n{prompt}",
+        border_style="blue",
+        expand=False
+    ))
 
     # 3. Send a single request to the model
-
-    # 4. print the response in stream mode
+    result = single_completion(provider, model, prompt)
+    
+    # If there's no output (which is the case with ollama since it streams directly)
+    # we should at least provide some feedback that we're done
+    if result is None or result == "":
+        console.print("\n\n[bold green]Completion finished.[/bold green]")
+    
+    return 0

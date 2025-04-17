@@ -10,3 +10,7 @@ def get_gemini_models(api_key):
         return res
     except Exception as e:
         return []
+
+
+def gemini_single_completion(model, prompt, api_key):
+    return ""

@@ -11,3 +11,7 @@ def get_deepseek_models(api_key):
         return res
     except Exception as e:
         return []
+
+
+def deepseek_single_completion(model, prompt, api_key):
+    return ""

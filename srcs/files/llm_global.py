@@ -1,10 +1,10 @@
 from files.config import get_api_key, get_ollama_addr
-from .llm_ollama import get_ollama_models
-from .llm_openai import get_openai_models
-from .llm_deepseek import get_deepseek_models
-from .llm_gemini import get_gemini_models
-from .llm_mistral import get_mistral_models
-from .llm_anthropic import get_anthropic_models
+from .llm_ollama import get_ollama_models, ollama_single_completion
+from .llm_openai import get_openai_models, openai_single_completion
+from .llm_deepseek import get_deepseek_models, deepseek_single_completion
+from .llm_gemini import get_gemini_models, gemini_single_completion
+from .llm_mistral import get_mistral_models, mistral_single_completion
+from .llm_anthropic import get_anthropic_models, anthropic_single_completion
 
 
 def retrieve_models(provider):
@@ -21,5 +21,22 @@ def retrieve_models(provider):
         return get_mistral_models(get_api_key(provider))
     elif provider == "anthropic":
         return get_anthropic_models(get_api_key(provider))
+    else:
+        pass
+
+def single_completion(provider, model, prompt):
+    """Send a single request to the model"""
+    if provider == "ollama":
+        return ollama_single_completion(model, prompt)
+    elif provider == "openai":
+        return openai_single_completion(model, prompt, get_api_key(provider))
+    elif provider == "deepseek":
+        return deepseek_single_completion(model, prompt, get_api_key(provider))
+    elif provider == "gemini":
+        return gemini_single_completion(model, prompt, get_api_key(provider))
+    elif provider == "mistral":
+        return mistral_single_completion(model, prompt, get_api_key(provider))
+    elif provider == "anthropic":
+        return anthropic_single_completion(model, prompt, get_api_key(provider))
     else:
         pass

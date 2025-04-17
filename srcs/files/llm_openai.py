@@ -12,3 +12,5 @@ def get_openai_models(api_key):
         return []
 
 
+def openai_single_completion(model, prompt, api_key):
+    return ""
