@@ -23,6 +23,7 @@ def openai_single_completion(model, prompt, api_key):
         full_response = StringIO()
         output_produced = False
 
+        """
         console.print(Panel(
             "[italic]Generating response...[/italic]",
             title=f"[bold blue]{model}[/bold blue] response",
@@ -32,7 +33,10 @@ def openai_single_completion(model, prompt, api_key):
         ))
 
         console.print("", end="")
+        """
 
+        console.print("")
+        
         client = openai.OpenAI(api_key=api_key)
         response = client.chat.completions.create(
             model=model,
@@ -53,6 +57,7 @@ def openai_single_completion(model, prompt, api_key):
         if output_produced:
             text_response = full_response.getvalue()
             
+            """
             # 1. Display plaintext response in a panel
             plaintext_panel = Panel(
                 Text(text_response),
@@ -66,7 +71,8 @@ def openai_single_completion(model, prompt, api_key):
             
             # Add a small separator
             console.print("")
-            
+            """
+
             # 2. Display markdown response in a panel
             md = Markdown(text_response)
             markdown_panel = Panel(

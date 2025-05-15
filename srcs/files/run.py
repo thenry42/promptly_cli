@@ -369,7 +369,9 @@ def run_with_model_and_prompt(arg1, arg2):
 
     # Get the prompt from arg2
     prompt = arg2
-    
+
+    # Show startup message
+    console.print("")
     console.print(Panel(
         f"[bold]Using [green]{provider}[/green]/[cyan]{model}[/cyan] to answer:[/bold]\n{prompt}",
         border_style="blue",
