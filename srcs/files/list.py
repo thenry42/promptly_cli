@@ -44,8 +44,6 @@ def list_models():
         return
         
     console.print()
-    console.print(Text("🤖 Available Language Models", style="bold cyan underline", justify="center"))
-    console.print()
     
     # Track providers with issues to list them at the end
     error_providers = []
@@ -243,9 +241,6 @@ def list_models_with_provider(provider):
         console.print(Panel(tips, title="[bold red]How to Fix", border_style="yellow"))
         return
     
-    # Display the provider header
-    console.print()
-    console.print(Text(f"🤖 {provider.upper()} Models", style=f"bold {color} underline", justify="center"))
     console.print()
     
     # Create a table for this provider
