@@ -2,9 +2,11 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
+from rich import box
 from rich.markdown import Markdown
 from .list import list_models, list_models_with_provider
 from .run import run_no_args, run_with_model, run_with_model_and_prompt
+from pyfiglet import Figlet
 
 
 def Usage():
@@ -66,6 +68,14 @@ def run(args):
 
 def help():
     console = Console()
+    
+    f = Figlet(font="starwars")
+    text = f.renderText("  Help")
+    
+    # Display the ASCII art text directly without a panel, with centering
+    console.print()
+    console.print(Text(text, justify="center"))
+    
     # Create a command table with explicit width settings
     table = Table(show_header=True, header_style="bold magenta", expand=True)
     table.add_column("Command", style="green", no_wrap=False)
@@ -79,7 +89,6 @@ def help():
     table.add_row("llm run \\[provider]/\\[model] \\[prompt]", "Run a specific model with a single request")
     table.add_row("llm help", "Help about any command")
     
-    console.print()
     console.print(Panel(
         table,
         title="[bold white]Available Commands",

@@ -13,3 +13,4 @@ google-generativeai
 google-genai
 openai
 anthropic
+pyfiglet
