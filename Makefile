@@ -1,6 +1,6 @@
 # Simple Makefile for Python project
 
-.PHONY: setup test clean run exe
+.PHONY: setup test clean run exe re
 
 # Configuration
 VENV = venv
@@ -33,6 +33,8 @@ exe: setup
 	$(VENV)/bin/pyinstaller --onefile --name promptly $(SRCS)/main.py
 	@echo "Executable created at dist/promptly"
 
+re: clean setup
+
 # Clean project files
 clean:
 	rm -rf build/ dist/ *.egg-info/ $(VENV) *.spec
@@ -50,3 +52,4 @@ help:
 	@echo "  test       Run the test suite"
 	@echo "  exe        Create standalone executable"
 	@echo "  clean      Remove temporary files and build artifacts"
+	@echo "  re         Remove temporary files and build artifacts and setup"
