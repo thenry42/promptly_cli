@@ -6,7 +6,6 @@ from rich import box
 from rich.markdown import Markdown
 from .list import list_models, list_models_with_provider
 from .run import run_no_args, run_with_model, run_with_model_and_prompt
-from pyfiglet import Figlet
 
 
 def Usage():
@@ -69,14 +68,8 @@ def run(args):
 def help():
     console = Console()
     
-    f = Figlet(font="starwars")
-    text = f.renderText("  Help")
-    
-    # Display the ASCII art text directly without a panel, with centering
-    console.print()
-    console.print(Text(text, justify="center"))
-    
     # Create a command table with explicit width settings
+    console.print()
     table = Table(show_header=True, header_style="bold magenta", expand=True)
     table.add_column("Command", style="green", no_wrap=False)
     table.add_column("Description", style="yellow", ratio=3)
