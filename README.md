@@ -1,3 +1,20 @@
+<div align="center">
+    <img src="assets/CLI.png" alt="Promptly CLI" width="500">
+</div>
+
+<div align="center">
+  <p>
+    <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"/>
+    <img src="https://img.shields.io/badge/-Zsh-412991?style=for-the-badge&logo=zsh&logoColor=white" alt="Zsh"/>
+    <img src="https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white" alt="OpenAI"/>
+    <img src="https://img.shields.io/badge/Ollama-412991?style=for-the-badge&logo=llama&logoColor=white" alt="Ollama"/>
+    <img src="https://img.shields.io/badge/Anthropic-412991?style=for-the-badge&logo=anthropic&logoColor=white" alt="Anthropic"/>
+    <img src="https://img.shields.io/badge/DeepSeek-412991?style=for-the-badge&logo=deepseek&logoColor=white" alt="DeepSeek"/>
+    <img src="https://img.shields.io/badge/Mistral-412991?style=for-the-badge&logo=mistral&logoColor=white" alt="Mistral"/>
+    <img src="https://img.shields.io/badge/Gemini-412991?style=for-the-badge&logo=gemini&logoColor=white" alt="Gemini"/>
+  </p>
+</div>
+
 # Promptly CLI
 
 A command-line interface for interacting with various AI language models.
@@ -5,7 +22,6 @@ A command-line interface for interacting with various AI language models.
 ## Features
 
 - Single command interface for all AI providers
-- Compatible with the Ollama CLI syntax
 - Interactive chat mode
 - Support for one-off queries
 - Easy switching between providers and models
@@ -109,3 +125,10 @@ This will:
 - Remove the installation directory
 - Optionally preserve your API keys configuration
 
+## License
+
+This project is licensed under the UNLICENSE. See the [LICENSE](LICENSE) file for details.
+
+## Disclaimer
+
+This project is not affiliated with OpenAI, Anthropic, Ollama, DeepSeek, Mistral, Gemini. It is a single person project. I personally use it as a tool to help me with my work and it's a good project for my portfolio. I do not claim to own any of the logos (or anything else for that matter) used in this project. All logos are property of their respective owners. Don't come after me with legal threats, nobody ain't got time for that. If you have any suggestions or feedback, please feel free to open an issue ! :smile:
